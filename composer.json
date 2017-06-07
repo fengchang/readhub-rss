@@ -1,0 +1,16 @@
+{
+  "name": "fengchang/readhub-rss",
+  "description": "Convert readhub to RSS format",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "fengchang",
+      "email": "fengchang08@gmail.com"
+    }
+  ],
+  "require": {
+    "monolog/monolog": "1.2.*",
+    "mibe/feedwriter": "1.1.1"
+  }
+}
