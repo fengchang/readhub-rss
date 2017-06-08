@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "monolog/monolog": "1.2.*",
+    "monolog/monolog": "1.22.*",
     "mibe/feedwriter": "1.1.1"
   }
 }
