@@ -37,7 +37,7 @@ if (isset($_GET['channel'])) {
 
 foreach ($channels as $channel) {
     if (!array_key_exists($channel, CHANNEL_CONFIG))
-        break;
+        continue;
     $channelItems = [];
     if (ENABLE_CACHE) {
         $channelJson = $redis->get($channel);
