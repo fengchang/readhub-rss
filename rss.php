@@ -42,7 +42,7 @@ foreach ($channels as $channel) {
     if (ENABLE_CACHE) {
         $channelJson = $redis->get($channel);
         if ($channelJson !== FALSE) {
-            $channelItems = json_decode($channelJson, TRUE);
+            $channelItems = unserialize($channelJson);
             $log->addInfo("CACHE: GET channel $channel from Redis");
         }
     }
@@ -51,7 +51,7 @@ foreach ($channels as $channel) {
         $api = new $className;
         $channelItems = $api->getData();
         if (ENABLE_CACHE) {
-            $redis->set($channel, json_encode($channelItems), CACHE_EXPIRE);
+            $redis->set($channel, serialize($channelItems), CACHE_EXPIRE);
             $log->addInfo("CACHE: SET channel $channel to Redis");
         }
     }
