@@ -42,8 +42,8 @@ function init_feed(){
     $feed->setLink('https://readhub.me/');
     $feed->setDate(new DateTime());
     $feed->setImage('https://cdn.readhub.me/static/assets/png/readhub_logo.png');
-    $feed->setChannelElement('author', array('name'=>'fengchang'));
-    $feed->setSelfLink('http://readhub.bayes.cafe/rss.php');
+    $feed->setChannelElement('author', 'fengchang@bayescafe.com');
+    $feed->setSelfLink('http://readhub.bayes.cafe/');
 
     return $feed;
 }
