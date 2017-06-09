@@ -20,7 +20,7 @@ $log->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
 $log->pushHandler(new StreamHandler('/opt/logs/bayes/readhub-rss/info.log', Logger::INFO));
 //$log->pushHandler(new LogglyHandler('2b26297e-cd7a-4902-812f-c481dcc2b5c2/tag/monolog', Logger::INFO));
 
-$readhub_data = json_decode(file_get_contents('https://api.readhub.me/topic?pageSize=10'), True);
+$readhub_data = json_decode(file_get_contents('https://api.readhub.me/topic?pageSize=20'), True);
 
 $feed = init_feed();
 foreach ($readhub_data['data'] as $readhub_item) {
