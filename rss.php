@@ -41,8 +41,10 @@ foreach ($channels as $channel) {
     $channelItems = [];
     if (ENABLE_CACHE) {
         $channelJson = $redis->get($channel);
-        if ($channelJson !== FALSE)
+        if ($channelJson !== FALSE) {
             $channelItems = json_decode($channelJson, TRUE);
+            $log->addInfo("CACHE: GET channel $channel from Redis");
+        }
     }
     if (empty($channelItems)) {
         $className = CHANNEL_CONFIG[$channel]['className'];
@@ -50,6 +52,7 @@ foreach ($channels as $channel) {
         $channelItems = $api->getData();
         if (ENABLE_CACHE) {
             $redis->set($channel, json_encode($channelItems), CACHE_EXPIRE);
+            $log->addInfo("CACHE: SET channel $channel to Redis");
         }
     }
     $feedItems = array_merge($feedItems, $channelItems);

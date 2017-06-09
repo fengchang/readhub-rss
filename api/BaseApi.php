@@ -7,7 +7,7 @@
  */
 
 namespace Api;
-
+use Monolog\Logger;
 
 use FeedWriter\ATOM;
 
@@ -26,5 +26,21 @@ abstract class BaseApi
         $item->setId('urn:readhub:'.$id);
         $item->setDescription($description);
         return $item;
+    }
+
+    protected function httpGet($url) {
+        $log = new Logger('readhub-rss');
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $result=curl_exec($ch);
+
+        $info = curl_getinfo($ch);
+        $log->addInfo("HTTP Request to {{$info['url']}}. Response code: {$info['http_code']}. Took time {$info['total_time']}.");
+
+        curl_close($ch);
+        return $result;
     }
 }
