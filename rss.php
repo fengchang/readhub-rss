@@ -11,7 +11,7 @@ require 'vendor/autoload.php';
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use \FeedWriter\ATOM;
+use FeedWriter\ATOM;
 
 date_default_timezone_set('Asia/Hong_Kong');
 
@@ -75,7 +75,7 @@ function initFeed()
     $feed->setDate(new DateTime());
     $feed->setImage('https://cdn.readhub.me/static/assets/png/readhub_logo.png');
     $feed->setChannelElement('author', 'fengchang@bayescafe.com');
-    $feed->setSelfLink('http://readhub.bayes.cafe/');
+    $feed->setSelfLink(RSS_URL);
 
     return $feed;
 }
