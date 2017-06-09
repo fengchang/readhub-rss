@@ -8,6 +8,7 @@
 
 namespace Api;
 use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 use FeedWriter\ATOM;
 
@@ -30,6 +31,7 @@ abstract class BaseApi
 
     protected function httpGet($url) {
         $log = new Logger('readhub-rss');
+        $log->pushHandler(new StreamHandler(LOG_PATH, Logger::INFO));
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
