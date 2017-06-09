@@ -6,52 +6,68 @@
  * Time: 下午10:49
  */
 
+require 'config.php';
 require 'vendor/autoload.php';
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-//use Monolog\Handler\LogglyHandler;
-//use Monolog\Formatter\LogglyFormatter;
 use \FeedWriter\ATOM;
 
 date_default_timezone_set('Asia/Hong_Kong');
 
 $log = new Logger('readhub-rss');
-$log->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
-$log->pushHandler(new StreamHandler('/opt/logs/bayes/readhub-rss/info.log', Logger::INFO));
-//$log->pushHandler(new LogglyHandler('2b26297e-cd7a-4902-812f-c481dcc2b5c2/tag/monolog', Logger::INFO));
+$log->pushHandler(new StreamHandler(LOG_PATH, Logger::INFO));
 
-$redis = new Redis();
-$redis->pconnect('127.0.0.1', 6379);
-
-$content = $redis->get('topics');
-
-if ($content === FALSE) {
-
-    $readhub_data = json_decode(file_get_contents('https://api.readhub.me/topic?pageSize=20'), True);
-
-    $feed = init_feed();
-    foreach ($readhub_data['data'] as $readhub_item) {
-        $feed_item = $feed->createNewItem();
-        fill_feed_item($feed_item, $readhub_item);
-        $feed->addItem($feed_item);
-    }
-    $content = $feed->generateFeed();
-    $redis->set('topics',$content, 200);
-
-    $log->addInfo("API: Get ".count($readhub_data['data'])." items. Newest is ".$readhub_data['data'][0]['id']);
-} else {
-    $log->addInfo("Redis: Get content from Redis");
+$redis = null;
+if (ENABLE_CACHE) {
+    $redis = new Redis();
+    $redis->pconnect(REDIS_HOST, REDIS_PORT);
 }
 
+$feedItems = [];
 
-header("Content-Type: application/atom+xml; charset=utf-8");
-echo $content;
+if (isset($_GET['channel'])) {
+    if ($_GET['channel'] === 'all')
+        $channels = array_keys(CHANNEL_CONFIG);
+    else
+        $channels = explode(",", $_GET['channel']);
+} else {
+    $channels = ['topics'];
+}
+
+foreach ($channels as $channel) {
+    if (!array_key_exists($channel, CHANNEL_CONFIG))
+        break;
+    $channelItems = [];
+    if (ENABLE_CACHE) {
+        $channelJson = $redis->get($channel);
+        if ($channelJson !== FALSE)
+            $channelItems = json_decode($channelJson, TRUE);
+    }
+    if (empty($channelItems)) {
+        $className = CHANNEL_CONFIG[$channel]['className'];
+        $api = new $className;
+        $channelItems = $api->getData();
+        if (ENABLE_CACHE) {
+            $redis->set($channel, json_encode($channelItems), CACHE_EXPIRE);
+        }
+    }
+    $feedItems = array_merge($feedItems, $channelItems);
+}
+
+usort($feedItems, "compareItem");
+
+$feed = initFeed();
+foreach ($feedItems as $item)
+    $feed->addItem($item);
+
+$feed->printFeed();
 
 /**
  * @return ATOM
  */
-function init_feed(){
+function initFeed()
+{
     $feed = new ATOM();
     $feed->setTitle('Readbub');
     $feed->setDescription('A RSS feed for Readhub');
@@ -64,24 +80,13 @@ function init_feed(){
     return $feed;
 }
 
-/**
- * @param $feed_item \FeedWriter\Item
- * @param $rh_item array
- * @return \FeedWriter\Item
- */
-function fill_feed_item($feed_item, $rh_item) {
-    $feed_item->setTitle($rh_item['title']);
-    $feed_item->setDate($rh_item['publishDate']);
-
-    $news = $rh_item['newsArray'][0];
-    $feed_item->setLink($news['url']);
-    $feed_item->setAuthor($news['iteName'].' / '.$news['authorName']);
-    $feed_item->setId('urn:readhub:'.$rh_item['id']);
-
-    $content = "<p>{$rh_item['summary']}</p>";
-    foreach ($rh_item['newsArray'] as $rh_news) {
-        $content = $content."<p><a href='{$rh_news['url']}'>{$rh_news['siteName']} : {$rh_news['title']}</a></p>";
+function compareItem($a, $b)
+{
+    $aDate = $a->getElements()['updated'];
+    $bDate = $b->getElements()['updated'];
+    if ($aDate == $bDate) {
+        return 0;
+    } else {
+        return $aDate < $bDate ? 1 : 0;
     }
-    $feed_item->setDescription($content);
-    return $feed_item;
 }
