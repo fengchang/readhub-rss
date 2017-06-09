@@ -7,6 +7,28 @@
  */
 
 require 'config.php';
+require 'vendor/autoload.php';
+
+$agent = $_SERVER['HTTP_USER_AGENT'];
+$pos = strpos($agent, "Mozilla");
+
+
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+date_default_timezone_set('Asia/Hong_Kong');
+
+$log = new Logger('readhub-rss');
+$log->pushHandler(new StreamHandler(LOG_PATH, Logger::INFO));
+
+if ($pos === false) {
+    $log->addInfo("Agent is $agent. Show redirection page.");
+    include 'rss_redirected.php';
+    exit();
+} else {
+    $log->addInfo("Agent is $agent. Show index.");
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
