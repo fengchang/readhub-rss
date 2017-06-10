@@ -10,13 +10,13 @@ require 'config.php';
 require 'vendor/autoload.php';
 
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
 use FeedWriter\ATOM;
 
 date_default_timezone_set('Asia/Hong_Kong');
 
 $log = new Logger('readhub-rss');
-$log->pushHandler(new StreamHandler(LOG_PATH, Logger::INFO));
+$log->pushHandler(new RotatingFileHandler(LOG_PATH, LOG_KEEP_DAYS, Logger::INFO));
 
 $redis = null;
 if (ENABLE_CACHE) {

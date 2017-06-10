@@ -14,12 +14,12 @@ $pos = strpos($agent, "Mozilla");
 
 
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
 
 date_default_timezone_set('Asia/Hong_Kong');
 
 $log = new Logger('readhub-rss');
-$log->pushHandler(new StreamHandler(LOG_PATH, Logger::INFO));
+$log->pushHandler(new RotatingFileHandler(LOG_PATH, LOG_KEEP_DAYS, Logger::INFO));
 
 if ($pos === false) {
     $log->addInfo("Agent is $agent. Show redirection page.");
