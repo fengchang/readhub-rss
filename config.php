@@ -11,7 +11,7 @@ define("REDIS_HOST", "127.0.0.1");
 define("REDIS_PORT", 6379);
 define("CACHE_EXPIRE", 200);
 define("LOG_PATH", '/opt/logs/bayes/readhub-rss/info.log');
-define("RSS_URL", 'http://readhub.bayes.cafe/rss.php');
+define("RSS_URL", 'http://readhub.bayes.cafe/rss');
 
 const CHANNEL_CONFIG = [
     'topics' => ["name" => "热门话题", "className" => "Api\Topics"],
