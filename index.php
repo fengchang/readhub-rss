@@ -9,10 +9,6 @@
 require 'config.php';
 require 'vendor/autoload.php';
 
-$agent = $_SERVER['HTTP_USER_AGENT'];
-$pos = strpos($agent, "Mozilla");
-
-
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 
@@ -20,14 +16,6 @@ date_default_timezone_set('Asia/Hong_Kong');
 
 $log = new Logger('readhub-rss');
 $log->pushHandler(new RotatingFileHandler(LOG_PATH, LOG_KEEP_DAYS, Logger::INFO));
-
-if ($pos === false) {
-    $log->addInfo("Agent is $agent. Show redirection page.");
-    include 'rss_redirected.php';
-    exit();
-} else {
-    $log->addInfo("Agent is $agent. Show index.");
-}
 
 ?>
 <!DOCTYPE html>
@@ -57,7 +45,7 @@ if ($pos === false) {
         ?>
         <p>
             <a id="customRssLink" href="">请选中需要订阅的频道</a>
-            <img src="https://cdnjs.cloudflare.com/ajax/libs/webicons/2.0.0/webicons/webicon-rss-s.png" alt="">
+            <img id="customRssIcon" src="https://cdnjs.cloudflare.com/ajax/libs/webicons/2.0.0/webicons/webicon-rss-s.png" alt="">
         </p>
     </fieldset>
 </div>
@@ -75,9 +63,11 @@ if ($pos === false) {
             var rssUrl = rssBaseUrl + '?channel=' + checkedValue.join(",");
             document.getElementById('customRssLink').innerHTML = rssUrl;
             document.getElementById('customRssLink').href = rssUrl;
+            document.getElementById('customRssIcon').style.display = "inline";
         } else {
             document.getElementById('customRssLink').innerHTML = "请选中需要订阅的频道";
             document.getElementById('customRssLink').removeAttribute('href');
+            document.getElementById('customRssIcon').style.display = "none";
         }
     }
     generateRss();
