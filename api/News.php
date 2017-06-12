@@ -17,13 +17,17 @@ class News extends BaseApi
         $items = [];
 
         foreach ($readhubData['data'] as $readhubItem) {
+            try {
+                $author = $readhubItem['siteName'].' / '.$readhubItem['authorName'];
 
-            $author = $readhubItem['siteName'].' / '.$readhubItem['authorName'];
+                $feedItem = $this->generateItem($readhubItem['title'], $readhubItem['publishDate'],
+                    $readhubItem['url'], $author, 'news:'.$readhubItem['id'], $readhubItem['summary']);
 
-            $feedItem = $this->generateItem($readhubItem['title'], $readhubItem['publishDate'],
-                $readhubItem['url'], $author, 'news:'.$readhubItem['id'], $readhubItem['summary']);
-
-            $items[] = $feedItem;
+                $items[] = $feedItem;
+            } catch (\Exception $e) {
+                $this->getLogger()->addError($e->getMessage());
+                $this->getLogger()->addError($e->getTraceAsString());
+            }
         }
 
         return $items;

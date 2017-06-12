@@ -10,7 +10,7 @@ define("ENABLE_CACHE", TRUE);
 
 define("REDIS_HOST", "127.0.0.1");
 define("REDIS_PORT", 6379);
-define("CACHE_EXPIRE", 200);
+define("CACHE_EXPIRE", 300);
 
 define("LOG_PATH", '/opt/logs/bayes/readhub-rss/info.log');
 define("LOG_KEEP_DAYS", 10);

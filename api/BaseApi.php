@@ -16,7 +16,8 @@ abstract class BaseApi
 {
     abstract function getData();
 
-    protected function generateItem($title, $date, $link, $author, $id, $description) {
+    protected function generateItem($title, $date, $link, $author, $id, $description)
+    {
         $feed = new ATOM();
         $item = $feed->createNewItem();
 
@@ -29,9 +30,9 @@ abstract class BaseApi
         return $item;
     }
 
-    protected function httpGet($url) {
-        $log = new Logger('readhub-rss');
-        $log->pushHandler(new RotatingFileHandler(LOG_PATH, LOG_KEEP_DAYS, Logger::INFO));
+    protected function httpGet($url)
+    {
+
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -40,9 +41,16 @@ abstract class BaseApi
         $result=curl_exec($ch);
 
         $info = curl_getinfo($ch);
-        $log->addInfo("HTTP Request to {{$info['url']}}. Response code: {$info['http_code']}. Took time {$info['total_time']}.");
+        $this->getLogger()->addInfo("HTTP Request to {{$info['url']}}. Response code: {$info['http_code']}. Took time {$info['total_time']}.");
 
         curl_close($ch);
         return $result;
+    }
+
+    protected function getLogger()
+    {
+        $log = new Logger('readhub-rss');
+        $log->pushHandler(new RotatingFileHandler(LOG_PATH, LOG_KEEP_DAYS, Logger::INFO));
+        return $log;
     }
 }
