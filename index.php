@@ -7,15 +7,6 @@
  */
 
 require 'config.php';
-require 'vendor/autoload.php';
-
-use Monolog\Logger;
-use Monolog\Handler\RotatingFileHandler;
-
-date_default_timezone_set('Asia/Hong_Kong');
-
-$log = new Logger('readhub-rss');
-$log->pushHandler(new RotatingFileHandler(LOG_PATH, LOG_KEEP_DAYS, Logger::INFO));
 
 ?>
 <!DOCTYPE html>
@@ -48,6 +39,10 @@ $log->pushHandler(new RotatingFileHandler(LOG_PATH, LOG_KEEP_DAYS, Logger::INFO)
             <img id="customRssIcon" src="https://cdnjs.cloudflare.com/ajax/libs/webicons/2.0.0/webicons/webicon-rss-s.png" alt="">
         </p>
     </fieldset>
+    
+    <p style="text-align: right;">
+        See on <a href="https://github.com/fengchang/readhub-rss">Github</a>.
+    </p>
 </div>
 <script>
     function generateRss() {

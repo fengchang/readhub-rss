@@ -6,7 +6,7 @@
  * Time: 下午8:40
  */
 
-define("ENABLE_CACHE", TRUE);
+define("ENABLE_CACHE", FALSE);
 
 define("REDIS_HOST", "127.0.0.1");
 define("REDIS_PORT", 6379);
