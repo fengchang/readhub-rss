@@ -13,7 +13,7 @@ class Topics extends BaseApi
 {
     function getData()
     {
-        $readhubData = json_decode($this->httpGet('https://api.readhub.me/topic?pageSize=20'), True);
+        $readhubData = json_decode($this->httpGet(READHUB_DOMAIN.'/topic?pageSize=20'), True);
         $items = [];
 
         foreach ($readhubData['data'] as $readhubItem) {

@@ -13,7 +13,7 @@ class TechNews extends BaseApi
 {
     function getData()
     {
-        $readhubData = json_decode($this->httpGet('https://api.readhub.me/technews?pageSize=20'), True);
+        $readhubData = json_decode($this->httpGet(READHUB_DOMAIN.'/technews?pageSize=20'), True);
         $items = [];
 
         foreach ($readhubData['data'] as $readhubItem) {

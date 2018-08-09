@@ -16,6 +16,7 @@ define("LOG_PATH", '/opt/logs/bayes/readhub-rss/info.log');
 define("LOG_KEEP_DAYS", 10);
 
 define("RSS_URL", 'http://readhub.bayes.cafe/rss');
+define("READHUB_DOMAIN", 'https://api.readhub.cn');
 
 const CHANNEL_CONFIG = [
     'topics' => ["name" => "热门话题", "className" => "Api\Topics"],
